@@ -58,6 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import spit.matrix2017.R;
 
@@ -73,7 +74,9 @@ public class EventDetails
     private boolean visitedCalendar, isFirstLaunch;
     ImageView mainImageView;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    CardView organizers_card,prizes_card,registration_card;
+    CardView organizers_card,prizes_card,registration_card,venue_time_card;
+    TextView hardcodedDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,9 @@ public class EventDetails
         organizers_card =(CardView)findViewById(R.id.organizers_card);
         prizes_card = (CardView)findViewById(R.id.prizes_card);
         registration_card =(CardView)findViewById(R.id.registration_card);
+        venue_time_card=(CardView)findViewById(R.id.venue_time_card);
+
+        hardcodedDate=(TextView)findViewById(R.id.hardcodedDate);
 
         visitedCalendar = false;
         isFirstLaunch = true;
@@ -108,6 +114,10 @@ public class EventDetails
         else
             this.setTitle("Some event");
 
+        if(Objects.equals(event_name, "Daniel Fernandes")||Objects.equals(event_name, "Techshiksha")||Objects.equals(event_name, "Sky Observation")||Objects.equals(event_name, "Hackathon")||Objects.equals(event_name, "Ethical Hacking")){
+            hardcodedDate.setVisibility(View.GONE);
+        }
+
         setDescription(getIntent().getStringExtra("description"));
         setVenueAndTime(getIntent().getStringExtra("venue"), getIntent().getStringExtra("time"));
         setRegistration(getIntent().getStringExtra("registration"));
@@ -119,7 +129,7 @@ public class EventDetails
 
         mainImageView = (ImageView) findViewById(R.id.main_imageView);
         assert mainImageView != null;
-        mainImageView.setImageResource(getIntent().getIntExtra("image", R.drawable.virtual_stock_market));
+        mainImageView.setImageResource(getIntent().getIntExtra("image", R.drawable.event_vsm));
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -282,6 +292,19 @@ public class EventDetails
     private void setVenueAndTime(String venue, String time) {
         AppCompatTextView venueTimeTextView = (AppCompatTextView) findViewById(R.id.venue_time_textView);
         assert venueTimeTextView != null;
+        System.out.println(venue+time);
+        if(Objects.equals(venue, "None")&&Objects.equals(time, "None")){
+            venue_time_card.setVisibility(View.GONE);
+            return;
+        }
+        if(Objects.equals(venue, "None")){
+            venueTimeTextView.setText(time);
+            return;
+        }
+        if(Objects.equals(time, "None")) {
+            venueTimeTextView.setText(venue);
+            return;
+        }
         venueTimeTextView.setText(venue + "\n" + time);
     }
 
@@ -294,7 +317,10 @@ public class EventDetails
     private void setPrizes(String prizes) {
         AppCompatTextView prizesTextView = (AppCompatTextView) findViewById(R.id.prizes_textView);
         assert prizesTextView != null;
+        if(Objects.equals(prizes, "None"))
+            prizes_card.setVisibility(View.GONE);
         prizesTextView.setText(prizes);
+
     }
 
     private void setContacts(final String name1, final String number1, final String name2, final String number2) {
@@ -359,6 +385,10 @@ public class EventDetails
     }
 
     private void setReminder() {
+        if(Objects.equals(event_name, "Ethical Hacking")){
+            Toast.makeText(this,"Date and time have not yet been finalized!",Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(ContextCompat.checkSelfPermission(EventDetails.this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 1);
         else
@@ -371,37 +401,63 @@ public class EventDetails
 
                 if(event_name != null && event_name.equals("VSM"))
                 {
-                    beginTime.set(2017, 1, 16, 13, 0);
-                    endTime.set(2017, 1, 16, 14, 0);
+                    beginTime.set(2017, 1, 15, 13, 0);
+                    endTime.set(2017, 1, 15, 14, 0);
+                }
+                else if(event_name != null && event_name.equals("Daniel Fernandes"))
+                {
+                    beginTime.set(2017, 1, 15, 16, 0);
+                    endTime.set(2017, 1, 15, 17, 0);
+                }
+                else if(event_name != null && event_name.equals("Techshiksha"))
+                {
+                    beginTime.set(2017, 1, 15, 18, 0);
+                    endTime.set(2017, 1, 15, 19, 0);
+                }
+                else if(event_name != null && event_name.equals("Sky Observation"))
+                {
+                    beginTime.set(2017, 1, 16, 18, 0);
+                    endTime.set(2017, 1, 16, 21, 0);
                 }
                 else
                 {
-                    beginTime.set(2017, 1, 16, 9, 0);
-                    endTime.set(2017, 1, 16, 18, 0);
+                    beginTime.set(2017, 1, 15, 9, 0);
+                    endTime.set(2017, 1, 15, 18, 0);
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Remind on?");
-                builder.setItems(new String[]{"Day 1", "Day 2"}, new DialogInterface.OnClickListener() {
+                CharSequence day[];
+                if(Objects.equals(event_name, "Daniel Fernandes")||Objects.equals(event_name,"Techshiksha"))
+                    day=new CharSequence[]{"Day 1"};
+                else if(Objects.equals(event_name,"Sky Observation"))
+                    day=new CharSequence[]{"Day 2"};
+                else
+                    day=new CharSequence[]{"Day 1","Day 2"};
+                builder.setItems(day, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i == 1)
+                        if(i == 0){
+                            goToCalendar(beginTime,endTime);
+                        }
+                        else
                         {
                             if(event_name != null && event_name.equals("VSM"))
                             {
-                                beginTime.set(2017, 1, 17, 13, 0);
-                                endTime.set(2017, 1, 17, 14, 0);
+                                beginTime.set(2017, 1, 16, 13, 0);
+                                endTime.set(2017, 1, 16, 14, 0);
                             }
-                            else
-                            {
-                                beginTime.set(2017, 1, 17, 9, 0);
-                                endTime.set(2017, 1, 17, 18, 0);
+                            else if((event_name!=null) && (event_name.equals("Battle Frontier")||event_name.equals("TechXplosion")||event_name.equals("Techeshi's Castle"))){
+                                beginTime.set(2017, 1, 16, 9, 0);
+                                endTime.set(2017, 1, 16, 15, 0);
+                            }
+                            else{
+                                beginTime.set(2017, 1, 16, 9, 0);
+                                endTime.set(2017, 1, 16, 18, 0);
                             }
 
                             goToCalendar(beginTime, endTime);
                         }
-                        else
-                            goToCalendar(beginTime, endTime);
                     }
                 });
                 builder.show();
@@ -419,7 +475,7 @@ public class EventDetails
                 .putExtra(CalendarContract.Events._ID, mEventID)
                 .putExtra(CalendarContract.Events.TITLE, event_name)
                 .putExtra(CalendarContract.Events.DESCRIPTION, "Event at Matrix 17")
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, getIntent().getStringExtra("venue"))
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, getIntent().getStringExtra("venue")+", S.P.I.T.")
                 .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
 
         visitedCalendar = true;

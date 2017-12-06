@@ -19,6 +19,7 @@ package spit.matrix2017.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -37,7 +38,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -48,6 +48,7 @@ import spit.matrix2017.Fragments.ContactUsFragment;
 import spit.matrix2017.Fragments.DevelopersFragment;
 import spit.matrix2017.Fragments.FavoritesFragment;
 import spit.matrix2017.Fragments.MainFragment;
+import spit.matrix2017.Fragments.SponsorsFragment;
 import spit.matrix2017.HelperClasses.CustomPagerAdapter;
 import spit.matrix2017.HelperClasses.CustomViewPager;
 import spit.matrix2017.R;
@@ -73,27 +74,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        if(Build.VERSION.SDK_INT >= 21)
+            setContentView(R.layout.activity_main_v21);
+        else
+            setContentView(R.layout.activity_main);
 
         int[] images = {
-                R.drawable.codatron,
-                R.drawable.laser_maze,
-                R.drawable.laser_tag,
-                R.drawable.virtual_stock_market,
-                R.drawable.battle_frontier,
-                R.drawable.escape_plan,
-                R.drawable.tech_charades,
-                R.drawable.tech_xplosion,
-                R.drawable.no_escape,
-                R.drawable.techeshis_castle,
-                R.drawable.technovanza,
-                R.drawable.tesseract,
-                R.drawable.battle_of_brains,
-                R.drawable.human_foosball,
-                R.drawable.lan_gaming,
-                R.drawable.lan_mafia,
-                R.drawable.mind_that_word,
-                R.drawable.pokemon_showdown
+                R.drawable.event_daniel_fernandes,
+                R.drawable.event_techshiksha,
+                R.drawable.event_ethical_hacking,
+                R.drawable.event_startup_showcase,
+                R.drawable.event_hackathon,
+                R.drawable.event_project_mania,
+                R.drawable.event_sky_observation,
+                R.drawable.event_vsm,
+                R.drawable.event_codatron,
+                R.drawable.event_laser_maze,
+                R.drawable.event_laser_tag,
+
+                R.drawable.event_tech_charades,
+                R.drawable.event_battle_frontier,
+                R.drawable.event_escape_plan,
+                R.drawable.event_tech_xplosion,
+                R.drawable.event_no_escape,
+                R.drawable.event_techeshis_castle,
+                R.drawable.event_tesseract,
+
+                R.drawable.event_human_foosball,
+                R.drawable.event_battle_of_brains,
+                R.drawable.event_lan_gaming,
+                R.drawable.event_pokemon_showdown,
+                R.drawable.event_lan_mafia,
+                R.drawable.event_mind_that_word,
+
         };
 
         for(int i: images)
@@ -114,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         h.postDelayed(r, 5000);
-        
+
         //instantiation
         toolbar = (Toolbar)findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -201,21 +215,15 @@ public class MainActivity extends AppCompatActivity {
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(MainActivity.this, "Coming soon!", Toast.LENGTH_SHORT).show();
-
-                                            // IMPORTANT: Remove checkable=false from the 'Sponsors' menu item in res/menu/navdrawer_menu.xml when Sponsors fragment is complete
-
-                                            /* Delete later
                                             getSupportFragmentManager().popBackStackImmediate();
                                             fragmentTransaction.replace(R.id.fragment_container, new SponsorsFragment());
                                             appBarLayout.setExpanded(false, true);
                                             fragmentTransaction.addToBackStack(null);
                                             fragmentTransaction.commit();
                                             collapsingToolbarLayout.setTitle("Sponsors");
-                                            */
                                         }
                                     }, DRAWER_DELAY);
-                                    return true; //Replace by 'break' later
+                                    break;
 
                                 case R.id.commitee_menuItem:
                                     new Handler().postDelayed(new Runnable() {
@@ -335,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     public void onBackPressed()
     {

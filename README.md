@@ -2,6 +2,8 @@
 
 An open source application for the annual technical festival of Sardar Patel Institute of Technology.
 
+Download the app from Play Store - https://play.google.com/store/apps/details?id=spit.matrix2017
+
 ![Alt text](https://github.com/TejasBhitle/Matrix2017/blob/master/screenshot.jpg "Screenshots")
 
 # License
